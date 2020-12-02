@@ -1,0 +1,6 @@
+.idea
+log/
+
+# model or checkpoint
+*.model
+
