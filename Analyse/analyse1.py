@@ -4,7 +4,7 @@ import numpy as np
 import re
 import jieba
 
-train = pd.read_csv('data/train_first.csv')
+train = pd.read_csv('../data/train_first.csv')
 # test = pd.read_csv('data/predict_first.csv')
 
 def clear_str(string):
@@ -28,7 +28,10 @@ print(sum(data['length']))
 # print(data['length'])
 # print(max(data['length']), min(data['length']))
 # plt.plot(range(1, 100001), data['length'])
-# plt.xlabel('Sample')
-# plt.ylabel('Length of discuss')
-# plt.savefig('fig/length.png')
+
+sort_length = data['length'][np.argsort(-data['length'])]
+plt.plot(range(1, 100001), sort_length)
+plt.xlabel('Sample')
+plt.ylabel('Length of discuss')
+plt.savefig('../fig/length-sort.png')
 
