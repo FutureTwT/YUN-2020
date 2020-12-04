@@ -133,7 +133,7 @@ tr_score = metrics.accuracy_score(y_train, predict_train)
 te_score = metrics.accuracy_score(y_test, predict_test)
 print('[Adaboost]Train acc: %.4f, Test acc: %.4f.'%(tr_score, te_score))
 '''
-from mlxtend.classifier import StackingClassifier
+from mlxtend.classifier import StackingClassifier, EnsembleVoteClassifier
 from sklearn.linear_model import LogisticRegression
 
 xgb = XGBClassifier()
@@ -142,6 +142,7 @@ gbm = LGBMClassifier(num_leaves=31, learning_rate=0.05, n_estimators=20)
 ada = AdaBoostClassifier()
 mlp = MLPClassifier(alpha=1, max_iter=1000)
 
+'''
 lr = LogisticRegression()
 stack_model = StackingClassifier(classifiers=[xgb, dt, gbm, ada, mlp],
                                  use_probas=True,
@@ -151,7 +152,17 @@ stack_model = StackingClassifier(classifiers=[xgb, dt, gbm, ada, mlp],
 scores = cross_val_score(
     stack_model, X, Y, cv=5, scoring='accuracy'
 )
+'''
+
+ensemble_model = EnsembleVoteClassifier(clfs=[xgb, dt, gbm, ada, mlp],
+                                        weights=[1,1,1,1,1],
+                                        voting='soft')
+
+scores = cross_val_score(
+    ensemble_model, X, Y, cv=5, scoring='accuracy'
+)
 
 print(scores.mean(), scores.std())
+
 
 
