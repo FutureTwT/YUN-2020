@@ -6,7 +6,7 @@ from sklearn import datasets
 from sklearn import metrics
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score
 
 from sklearn.svm import LinearSVC
 from sklearn.tree import DecisionTreeClassifier
@@ -42,6 +42,7 @@ Y = train['Score']
 
 X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.1, random_state=42)
 
+'''
 ## svm
 svm = LinearSVC(C=1, loss="hinge")
 svm.fit(X_train, y_train)
@@ -50,7 +51,7 @@ predict_test = svm.predict(X_test)
 
 tr_score = metrics.accuracy_score(y_train, predict_train)
 te_score = metrics.accuracy_score(y_test, predict_test)
-print('Train acc: %.4f, Test acc: %.4f.'%(tr_score, te_score))
+print('[SVM]Train acc: %.4f, Test acc: %.4f.'%(tr_score, te_score))
 
 ## xgboost
 xgb = XGBClassifier()
@@ -131,8 +132,26 @@ predict_test = ada.predict(X_test)
 tr_score = metrics.accuracy_score(y_train, predict_train)
 te_score = metrics.accuracy_score(y_test, predict_test)
 print('[Adaboost]Train acc: %.4f, Test acc: %.4f.'%(tr_score, te_score))
+'''
+from mlxtend.classifier import StackingClassifier
+from sklearn.linear_model import LogisticRegression
 
+xgb = XGBClassifier()
+dt = DecisionTreeClassifier(random_state=123, max_depth=10)
+gbm = LGBMClassifier(num_leaves=31, learning_rate=0.05, n_estimators=20)
+ada = AdaBoostClassifier()
+mlp = MLPClassifier(alpha=1, max_iter=1000)
 
+lr = LogisticRegression()
+stack_model = StackingClassifier(classifiers=[xgb, dt, gbm, ada, mlp],
+                                 use_probas=True,
+                                 average_probas=True,
+                                 meta_classifier=lr)
 
+scores = cross_val_score(
+    stack_model, X, Y, cv=5, scoring='accuracy'
+)
+
+print(scores.mean(), scores.std())
 
 
