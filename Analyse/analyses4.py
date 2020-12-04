@@ -42,7 +42,7 @@ Y = train['Score']
 # print(X.shape, Y.shape)
 
 # X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.1, random_state=42)
-cv = StratifiedShuffleSplit(X.shape[0], test_size=0.1, random_state=0)
+cv = StratifiedShuffleSplit(X.shape[0], test_size=0.1, random_state=0, n_splits=5)
 
 '''
 ## svm
