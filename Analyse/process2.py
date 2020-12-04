@@ -2,6 +2,7 @@ import gensim
 import os
 import numpy as np
 import seaborn as sns
+import matplotlib.pyplot as plt
 
 # load glove word embedding data
 GLOVE_DIR = "../glove/"
@@ -29,9 +30,15 @@ f.close()
 
 print(len(embeddings_index.keys()))
 
-corr = np.corrcoef(embed_data[:, :10].T)
-print(corr)
-fig = sns.heatmap(corr)
+_, ax = plt.subplots(3, 3)
+
+for i in range(9):
+    corr = np.corrcoef(embed_data[:, (10 * i): (10 * (i+1))].T)
+    print(corr.shape)
+    fig = sns.heatmap(corr, ax=ax[int(i/3), int(i%3)])
+    # fig.get_figure().savefig('../fig/heatmap-'+str(i+1)+'.png')
+    # plt.close()
+    plt.tight_layout()
 fig.get_figure().savefig('../fig/heatmap.png')
 
 '''
